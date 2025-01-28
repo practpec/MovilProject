@@ -29,9 +29,9 @@ fun LoginScreen(loginViewModel: LoginViewModel) {
     Column(modifier = Modifier
         .fillMaxSize()
         ) {
-        ContainerTop(Modifier.weight(1f)) {loginViewModel.onChangedNumber()}
-        ContainerCenter(Modifier.weight(1f), onClick = {loginViewModel.onChangedNumber()})
-        ContainerBottom(number,Modifier.weight(1f))
+        //ContainerTop(Modifier.weight(1f)) {loginViewModel.onChangedNumber()}
+        //ContainerCenter(Modifier.weight(1f), onClick = {loginViewModel.onChangedNumber()})
+        //ContainerBottom(number,Modifier.weight(1f))
     }
 }
 

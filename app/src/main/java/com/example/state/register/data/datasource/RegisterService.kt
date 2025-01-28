@@ -7,11 +7,13 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 
-interface RegisterApi {
-    @GET("users/{username}")
+interface RegisterService {
+    /*@GET("users/{username}")
     suspend fun validateUsername(@Path("username") username : String) : Response<UsernameValidateDTO>
+    */
+    @GET("v3/9f81fd5c-05d2-4e1b-bae6-d3bd4eec084b")
+    suspend fun validateUsername() : Response<UsernameValidateDTO>
 
     @POST("users")
     suspend fun createUser(@Body request : CreateUserRequest) : Response<UserDTO>

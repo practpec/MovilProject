@@ -1,6 +1,6 @@
 package com.example.state.core.network
 
-import com.example.state.register.data.datasource.RegisterApi
+import com.example.state.register.data.datasource.RegisterService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -14,7 +14,7 @@ object RetrofitHelper {
             .build()
     }
 
-    fun getRetrofit() : RegisterApi {
-        return retrofit.create(RegisterApi::class.java)
+    val registerService: RegisterService by lazy {
+        retrofit.create(RegisterService::class.java)
     }
 }
