@@ -9,6 +9,9 @@ class CreateUserUSeCase {
     private  val repository = RegisterRepository()
 
     suspend operator fun invoke(user: CreateUserRequest) : Result<UserDTO> {
-        return repository.createUser(user)
+        val result = repository.createUser(user)
+
+        //En caso de existir acá debe estar la lógica de negocio
+        return result
     }
 }

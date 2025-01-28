@@ -7,6 +7,9 @@ class UsernameValidateUseCase {
     private  val repository = RegisterRepository()
 
     suspend operator fun invoke() : Result<UsernameValidateDTO> {
-        return repository.validateUsername()
+        val result  = repository.validateUsername()
+
+        // En caso de existir acá debe estar la lógica de negocio
+        return result
     }
 }
