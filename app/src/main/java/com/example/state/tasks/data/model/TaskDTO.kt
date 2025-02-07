@@ -7,5 +7,5 @@ class TaskDTO (
     val date_limit: String,
     val status: Int = 0,
     val id_user: Int,
-    val created_at: String = ""
+    val createdAt: String = ""
 )

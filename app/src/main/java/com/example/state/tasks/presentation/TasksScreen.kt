@@ -12,29 +12,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.state.tasks.data.model.TaskDTO
 import com.example.state.ui.components.FilterDropdownMenu
 import com.example.state.ui.components.FontBackground
 import com.example.state.ui.components.TaskCard
 import com.example.state.ui.components.CustomModal
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import com.example.state.tasks.data.model.CreateTaskRequest
+import com.example.state.ui.components.CreateTaskModal
 import com.example.state.ui.components.TaskDetailModal
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksScreen(token: String, idUser: String, onLogout: () -> Unit) {
-    val tasksViewModel: TasksViewModel = viewModel()
+    //val tasksViewModel: TasksViewModel = viewModel()
+    val tasksViewModel: TasksViewModel = viewModel(factory = TasksViewModelFactory(LocalContext.current))
 
     val tasks by tasksViewModel.tasks.observeAsState(emptyList())
     val error by tasksViewModel.error.observeAsState("")
+    val selectedTaskId by tasksViewModel.selectedTaskId.observeAsState(null)
+    val taskDetail by tasksViewModel.taskDetail.observeAsState(null)
 
     var filter by remember { mutableStateOf("Todos") }
     var showDeleteModal by remember { mutableStateOf(false) }
-    var showDetailModal by remember { mutableStateOf(false) }
     var showCreateTaskModal by remember { mutableStateOf(false) }
-    var taskToDelete by remember { mutableStateOf<TaskDTO?>(null) }
-    var taskToShow by remember { mutableStateOf<TaskDTO?>(null) }
 
     LaunchedEffect(idUser) {
         tasksViewModel.loadTasks(idUser)
@@ -45,6 +47,8 @@ fun TasksScreen(token: String, idUser: String, onLogout: () -> Unit) {
         "Completados" -> tasks.filter { it.status == 1 }
         else -> tasks
     }
+
+
 
     FontBackground(modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -111,12 +115,11 @@ fun TasksScreen(token: String, idUser: String, onLogout: () -> Unit) {
                                     tasksViewModel.toggleTaskCompletion(task.id_task.toString())
                                 },
                                 onDeleteClick = {
-                                    taskToDelete = task
+                                    tasksViewModel.selectTaskToDelete(task.id_task)
                                     showDeleteModal = true
                                 },
                                 onClick = {
-                                    taskToShow = task
-                                    showDetailModal = true
+                                    tasksViewModel.selectTaskForDetail(task)
                                 }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
@@ -128,22 +131,29 @@ fun TasksScreen(token: String, idUser: String, onLogout: () -> Unit) {
 
         CustomModal(
             isOpen = showDeleteModal,
-            title = "Eliminar tarea",
-            message = "¿Estás seguro de que deseas eliminar esta tarea?",
-            onDismiss = { showDeleteModal = false },
+            onDismiss = {
+                tasksViewModel.clearSelectedTask()
+                showDeleteModal = false
+            },
             onAccept = {
-                taskToDelete?.let { task ->
-                    tasksViewModel.deleteTask(task.id_task.toString())
+                selectedTaskId?.let { taskId ->
+                    tasksViewModel.deleteTask(taskId.toString())
                 }
                 showDeleteModal = false
             },
-            onCancel = { showDeleteModal = false }
+            onCancel = {
+                tasksViewModel.clearSelectedTask()
+                showDeleteModal = false
+            }
         )
 
         TaskDetailModal(
-            isOpen = showDetailModal,
-            task = taskToShow,
-            onDismiss = { showDetailModal = false }
+            isOpen = taskDetail != null,
+            task = taskDetail,
+            onDismiss = {
+                tasksViewModel.clearTaskDetail()
+            },
+            tasksViewModel = tasksViewModel
         )
 
 
@@ -158,9 +168,12 @@ fun TasksScreen(token: String, idUser: String, onLogout: () -> Unit) {
                     date_limit = newTask.date_limit,
                     id_user = newTask.id_user
                 )
-
                 tasksViewModel.createTask(task)
-            }
+            },
+            onStartRecording = { tasksViewModel.startRecording() },
+            onStopRecording = { tasksViewModel.stopRecording() },
+            onPlayAudio = { tasksViewModel.playAudio() },
+            onDeleteAudio = { tasksViewModel.deleteRecording() }
         )
 
     }

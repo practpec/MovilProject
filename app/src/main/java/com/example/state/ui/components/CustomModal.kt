@@ -14,8 +14,6 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun CustomModal(
     isOpen: Boolean,
-    title: String,
-    message: String,
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
     onCancel: () -> Unit
@@ -39,7 +37,7 @@ fun CustomModal(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = title,
+                        text =  "Eliminar tarea",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.Black
                     )
@@ -47,7 +45,7 @@ fun CustomModal(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
-                        text = message,
+                        text = "¿Estás seguro de que deseas eliminar esta tarea?",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )

@@ -27,18 +27,21 @@ import com.example.state.ui.components.PrincipalText
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel = viewModel(),
-    onNavigate: (Boolean, String, String) -> Unit
+    onNavigate: (Boolean, String, String) -> Unit // Pasamos el login status y los valores
 ) {
     val email: String by loginViewModel.email.observeAsState("")
     val password: String by loginViewModel.password.observeAsState("")
     val success: Boolean by loginViewModel.success.observeAsState(false)
     val error: String by loginViewModel.error.observeAsState("")
 
+    // Obtener token e idUser desde el ViewModel
     val token: String by loginViewModel.token.observeAsState("")
     val idUser: String by loginViewModel.idUser.observeAsState("")
 
+    // Estado para la visibilidad de la contraseña
     var isPasswordVisible by remember { mutableStateOf(false) }
 
+    // Si el login es exitoso, pasamos el token y el idUser
     if (success) {
         onNavigate(true, token, idUser)
     }
