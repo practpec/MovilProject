@@ -1,83 +1,77 @@
 package com.example.state.register.presentation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.state.register.data.model.CreateUserRequest
-import com.example.state.ui.components.ButtonNavigate
-import com.example.state.ui.components.CustomTextField
-import com.example.state.ui.components.FontBackground
-import com.example.state.ui.components.FormContainer
-import com.example.state.ui.components.PrimaryButton
-import com.example.state.ui.components.PrincipalText
-import kotlinx.coroutines.launch
+import com.example.state.ui.components.*
 
-//@Preview(showBackground = true)
 @Composable
-fun RegisterScreen(registerViewModel: RegisterViewModel, onRegister: () -> Unit) {
-    val username:String by registerViewModel.username.observeAsState("")
-    val password:String by registerViewModel.password.observeAsState("")
-    val success:Boolean by registerViewModel.success.observeAsState(false)
-    val error:String by registerViewModel.error.observeAsState("")
+fun RegisterScreen(registerViewModel: RegisterViewModel = viewModel(), onRegister: () -> Unit) {
+    val username: String by registerViewModel.username.observeAsState("")
+    val email: String by registerViewModel.email.observeAsState("")
+    val password: String by registerViewModel.password.observeAsState("")
+    val success: Boolean by registerViewModel.success.observeAsState(false)
+    val error: String by registerViewModel.error.observeAsState("")
 
-    // Estados para la visibilidad de la contraseña
     var isPasswordVisible by remember { mutableStateOf(false) }
 
-    FontBackground (
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column (
-            modifier =Modifier
+    LaunchedEffect(success) {
+        if (success) {
+            onRegister()
+        }
+    }
+
+    FontBackground(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
-        ){
-            PrincipalText(
-            text = "¡Welcome!"
-                )
+        ) {
+            PrincipalText(text = "¡Bienvenido!")
+            PrincipalText(text = "Regístrate y empieza ahora", fontSize = 16)
 
-            PrincipalText(
-                text = "Sign up and start now",
-                fontSize = 16
-            )
             FormContainer {
                 CustomTextField(
                     value = username,
-                    onValueChange = {  registerViewModel.onChangeUsername(it)},
-                    label = "Username",
-                    placeholder = "Enter your username",
+                    onValueChange = { registerViewModel.onChangeUsername(it) },
+                    label = "Nombre de usuario",
+                    placeholder = "Ingresa tu usuario",
                     leadingIcon = Icons.Default.Person
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 CustomTextField(
-                    value = username,
-                    onValueChange = {  registerViewModel.onChangeUsername(it)},
-                    label = "Email",
-                    placeholder = "Enter your email",
+                    value = email,
+                    onValueChange = { registerViewModel.onChangeEmail(it) },
+                    label = "Correo electrónico",
+                    placeholder = "Ingresa tu correo",
                     leadingIcon = Icons.Default.Email
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 CustomTextField(
                     value = password,
                     onValueChange = { registerViewModel.onChangePassword(it) },
-                    label = "Password",
-                    placeholder = "Enter your password",
+                    label = "Contraseña",
+                    placeholder = "Ingresa tu contraseña",
                     leadingIcon = Icons.Default.Lock,
                     isPassword = true,
                     isPasswordVisible = isPasswordVisible,
@@ -85,22 +79,24 @@ fun RegisterScreen(registerViewModel: RegisterViewModel, onRegister: () -> Unit)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+
                 PrimaryButton(
-                    text = "Sign up",
+                    text = "Registrarse",
                     onClick = {
-                            val user = CreateUserRequest(username, password)
-                            registerViewModel.viewModelScope.launch {
-                                registerViewModel.onClick(user)
-                            }
+                        val user = CreateUserRequest(username, email, password)
+                        registerViewModel.onRegisterClick(user)
                     }
                 )
+
+                if (error.isNotEmpty()) {
+                    Text(text = error, color = Color.Red)
+                }
             }
+
             ButtonNavigate(
-                text = "Go to login",
+                text = "Ir al login",
                 onClick = { onRegister() }
             )
         }
-
     }
-
 }

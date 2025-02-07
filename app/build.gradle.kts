@@ -40,10 +40,13 @@ android {
     }
 }
 
-dependencies {
+configurations.all {
+    exclude(group = "xmlpull", module = "xmlpull")
+}
 
+dependencies {
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)     // ViewModel
+    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
@@ -53,13 +56,15 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.material.icons.extended)
-
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.androidx.compose.runtime.livedata)  //LiveData
-    implementation(libs.com.squareup.retrofit2.retrofit)
+    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.com.squareup.retrofit2.retrofit) {
+        exclude(group = "xmlpull", module = "xmlpull")
+    }
     implementation(libs.com.squareup.retrofit2.converter.json)
+    implementation(libs.androidx.navigation.safe.args.generator)
+    implementation(libs.androidx.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

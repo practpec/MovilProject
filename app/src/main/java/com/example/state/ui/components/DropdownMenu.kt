@@ -6,19 +6,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FilterDropdownMenu() {
+fun FilterDropdownMenu(onFilterSelected: (String) -> Unit) {
     val isDropDownExpanded = remember { mutableStateOf(false) }
-    val selectedOption = remember { mutableStateOf("All") }
-    val filterOptions = listOf("All", "Pending", "Completed")
+    val selectedOption = remember { mutableStateOf("Todos") }
+    val filterOptions = listOf("Todos", "Pendientes", "Completados")
 
     Box(
         modifier = Modifier
@@ -53,6 +51,7 @@ fun FilterDropdownMenu() {
                 onClick = {
                     selectedOption.value = option
                     isDropDownExpanded.value = false
+                    onFilterSelected(option)
                 }
             )
         }

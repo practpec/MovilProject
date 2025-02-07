@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             Surface (
                 modifier = Modifier.fillMaxSize(),
-                color = Color.Black
+                color = Color.White
             )
             {
                 NavigationWrapper()

@@ -1,14 +1,10 @@
 package com.example.state.register.presentation
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -16,64 +12,63 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewModelScope
-import com.example.state.register.data.model.CreateUserRequest
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.state.login.data.model.LoginRequest
+import com.example.state.login.presentation.LoginViewModel
 import com.example.state.ui.components.ButtonNavigate
 import com.example.state.ui.components.CustomTextField
 import com.example.state.ui.components.FontBackground
 import com.example.state.ui.components.FormContainer
 import com.example.state.ui.components.PrimaryButton
 import com.example.state.ui.components.PrincipalText
-import kotlinx.coroutines.launch
 
-//@Preview(showBackground = true)
 @Composable
-fun LoginScreen(registerViewModel: RegisterViewModel, onNavigate: (Boolean, String, String) -> Unit) {
-    val username:String by registerViewModel.username.observeAsState("")
-    val password:String by registerViewModel.password.observeAsState("")
-    val success:Boolean by registerViewModel.success.observeAsState(false)
-    val error:String by registerViewModel.error.observeAsState("")
+fun LoginScreen(
+    loginViewModel: LoginViewModel = viewModel(),
+    onNavigate: (Boolean, String, String) -> Unit
+) {
+    val email: String by loginViewModel.email.observeAsState("")
+    val password: String by loginViewModel.password.observeAsState("")
+    val success: Boolean by loginViewModel.success.observeAsState(false)
+    val error: String by loginViewModel.error.observeAsState("")
 
-    // Estados para la visibilidad de la contraseña
+    val token: String by loginViewModel.token.observeAsState("")
+    val idUser: String by loginViewModel.idUser.observeAsState("")
+
     var isPasswordVisible by remember { mutableStateOf(false) }
 
-    val isLoggedIn = true // Cambiar según el estado real de autenticación
-    val token = "sampleToken123"
-    val idUser = "user123"
+    if (success) {
+        onNavigate(true, token, idUser)
+    }
 
-    FontBackground (
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Column (
-            modifier =Modifier
+    FontBackground(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
-        ){
-            PrincipalText(
-                text = "¡Welcome back!"
-            )
-
-            PrincipalText(
-                text = "Log in to continue",
-                fontSize = 16
-            )
+        ) {
+            PrincipalText(text = "¡Bienvenido de nuevo!")
+            PrincipalText(text = "Inicia sesión para continuar", fontSize = 16)
 
             FormContainer {
                 CustomTextField(
-                    value = username,
-                    onValueChange = {  registerViewModel.onChangeUsername(it)},
-                    label = "Email",
-                    placeholder = "Enter your email",
+                    value = email,
+                    onValueChange = { loginViewModel.onChangeEmail(it) },
+                    label = "Correo electrónico",
+                    placeholder = "Ingresa tu correo",
                     leadingIcon = Icons.Default.Email
                 )
+
                 Spacer(modifier = Modifier.height(16.dp))
+
                 CustomTextField(
                     value = password,
-                    onValueChange = { registerViewModel.onChangePassword(it) },
-                    label = "Password",
-                    placeholder = "Enter your password",
+                    onValueChange = { loginViewModel.onChangePassword(it) },
+                    label = "Contraseña",
+                    placeholder = "Ingresa tu contraseña",
                     leadingIcon = Icons.Default.Lock,
                     isPassword = true,
                     isPasswordVisible = isPasswordVisible,
@@ -81,17 +76,26 @@ fun LoginScreen(registerViewModel: RegisterViewModel, onNavigate: (Boolean, Stri
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
+
                 PrimaryButton(
-                    text = "Log in",
-                    onClick = { onNavigate(isLoggedIn, token, idUser) }
+                    text = "Iniciar sesión",
+                    onClick = {
+                        val user = LoginRequest(email, password)
+                        loginViewModel.onLoginClick(user)
+                    }
                 )
+
+                if (error.isNotEmpty()) {
+                    Text(text = error, color = Color.Red)
+                }
             }
-           ButtonNavigate(
-               text = "Sign up here",
-               onClick = { onNavigate(false, "", "") }
-           )
+
+            ButtonNavigate(
+                text = "¿No tienes cuenta? Regístrate aquí",
+                onClick = { onNavigate(false, "", "") }
+            )
         }
-
     }
-
 }
+
+

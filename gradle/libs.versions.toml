@@ -17,6 +17,8 @@ lifecycleViewModelKtx = "2.8.7"
 navigationCompose = "2.8.2"
 kotlinxSerialization = "1.6.3"
 kotlinParcelize = "1.8.10"
+navigationSafeArgsGenerator = "2.8.6"
+storage = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +47,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material2" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+androidx-navigation-safe-args-generator = { group = "androidx.navigation", name = "navigation-safe-args-generator", version.ref = "navigationSafeArgsGenerator" }
+androidx-storage = { group = "androidx.test.services", name = "storage", version.ref = "storage" }
 
 
 [plugins]

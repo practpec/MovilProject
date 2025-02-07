@@ -1,4 +1,4 @@
-package com.example.state.ui.components // Ajusta el paquete según tu estructura
+package com.example.state.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
